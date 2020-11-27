@@ -1,0 +1,32 @@
+﻿@model List<Klant>
+@{
+    ViewData["Title"] = "Overzicht2";
+}
+
+<h2>Overzicht2</h2>
+
+<div>
+    @foreach (Klant item in Model)
+    {
+        <table>
+            <tr>
+                <th>Naam</th>
+                <th>Achternaam</th>
+                <th>Leeftijd</th>
+                <th>Products</th>
+            </tr>
+
+            <tr>
+                <td>@item.Naam</td>
+                <td>@item.Achternaam</td>
+                <td>@item.Leeftijd</td>
+
+                @foreach (Product product in item.products)
+                {
+                    <td>@product.Naam</td>
+                    <td>@product.Storage</td>
+                }
+            </tr>
+        </table>
+    }
+</div>
