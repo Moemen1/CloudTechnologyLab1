@@ -14,5 +14,11 @@ namespace CloudTechnologyMinorLab1.Models
 
         [FirestoreProperty]
         public int Storage { get; set; }
+
+        [FirestoreProperty]
+        public double Kosten { get; set; }
+    
+        [FirestoreProperty]
+        public int CPU { get; set; }
     }
 }

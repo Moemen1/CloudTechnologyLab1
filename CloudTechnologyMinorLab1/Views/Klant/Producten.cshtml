@@ -1,0 +1,43 @@
+﻿@model Klant
+@{
+    ViewData["Title"] = "Producten";
+}
+
+<h2>Klant: @Model.Naam @Model.Achternaam</h2>
+
+<div class=" container">
+    <div class="row">
+
+        <p><a asp-action="Create">Create new product</a></p>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Product naam</th>
+                    <th>Storage(TB)</th>
+                    <th>Kosten(euro)</th>
+                    <th>CPU</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Product product in Model.products)
+                {
+                <tr>
+                    <td>@product.Naam</td>
+                    <td>@product.Storage</td>
+                    <td>@product.Kosten</td>
+                    <td>@product.CPU</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@Model.Naam">Edit</a> |
+                        <a asp-action="Delete" asp-route-id="@Model.Naam">Delete</a>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="row">
+        <a asp-action="Index">Terug naar overzicht</a>
+    </div>
+    
+</div>
