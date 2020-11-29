@@ -15,24 +15,29 @@
                 <form asp-action="Create">
                     <div>
                         <div class="form-group">
-                            <label asp-for="Naam" class="control-label"></label>
-                            <input asp-for="Naam" class="form-control" />
-                            <span asp-validation-for="Naam" class="text-danger"></span>
+                            <label asp-for="ProductId" class="control-label"></label>
+                            <input asp-for="ProductId" class="form-control" />
+                            <span asp-validation-for="ProductId" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Storage" class="control-label"></label>
-                            <input asp-for="Storage" class="form-control" />
-                            <span asp-validation-for="Storage" class="text-danger"></span>
+                            <label asp-for="MemoryGB" class="control-label"></label>
+                            <input asp-for="MemoryGB" class="form-control" />
+                            <span asp-validation-for="MemoryGB" class="new text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Kosten" class="control-label"></label>
-                            <input asp-for="Kosten" class="form-control" />
-                            <span asp-validation-for="Kosten" class="text-danger"></span>
+                            <label asp-for="KostenPerMaand" class="control-label"></label>
+                            <input asp-for="KostenPerMaand" class="form-control" />
+                            <span asp-validation-for="KostenPerMaand" class="text-danger"></span>
                         </div>
                         <div class="form-group">
                             <label asp-for="CPU" class="control-label"></label>
                             <input asp-for="CPU" class="form-control" />
                             <span asp-validation-for="CPU" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="DiskType" class="control-label"></label>
+                            <input asp-for="DiskType" class="form-control" />
+                            <span asp-validation-for="DiskType" class="text-danger"></span>
                         </div>
                         <div class="form-group">
                             <input type="submit" value="Create" class="btn btn-default" />

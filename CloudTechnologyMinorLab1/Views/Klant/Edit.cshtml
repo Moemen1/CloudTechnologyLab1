@@ -1,0 +1,65 @@
+﻿@model Klant
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class="container">
+    <div class="row">
+        <h2>Edit a Klant</h2>
+        <hr />
+
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="Edit">
+                    <div>
+                        <div class="form-group">
+                            <label asp-for="Naam" class="control-label"></label>
+                            <input asp-for="Naam" class="form-control" />
+                            <span asp-validation-for="Naam" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Achternaam" class="control-label"></label>
+                            <input asp-for="Achternaam" class="form-control" />
+                            <span asp-validation-for="Achternaam" class="new text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Geslacht" class="control-label"></label>
+                            <input asp-for="Geslacht" class="form-control" />
+                            <span asp-validation-for="Geslacht" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Leeftijd" class="control-label"></label>
+                            <input asp-for="Leeftijd" class="form-control" />
+                            <span asp-validation-for="Leeftijd" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Postcode" class="control-label"></label>
+                            <input asp-for="Postcode" class="form-control" />
+                            <span asp-validation-for="Postcode" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Bedrijf" class="control-label"></label>
+                            <input asp-for="Bedrijf" class="form-control" />
+                            <span asp-validation-for="Bedrijf" class="text-danger"></span>
+                        </div>                     
+                        <div class="form-group">
+                            <input type="submit" value="Edit" class="btn btn-default" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <div>
+        <a asp-action="Index">Terug naar klanten</a>
+    </div>
+
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

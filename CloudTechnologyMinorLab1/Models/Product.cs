@@ -10,15 +10,18 @@ namespace CloudTechnologyMinorLab1.Models
     public class Product
     {
         [FirestoreProperty]
-        public string Naam { get; set; }
+        public string ProductId { get; set; }
 
         [FirestoreProperty]
-        public int Storage { get; set; }
+        public int MemoryGB { get; set; }
 
         [FirestoreProperty]
-        public double Kosten { get; set; }
+        public double KostenPerMaand { get; set; }
     
         [FirestoreProperty]
         public int CPU { get; set; }
+
+        [FirestoreProperty]
+        public string DiskType { get; set; }
     }
 }

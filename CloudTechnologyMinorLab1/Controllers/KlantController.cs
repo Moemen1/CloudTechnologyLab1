@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CloudTechnologyMinorLab1.Data;
 using CloudTechnologyMinorLab1.Models;
+using CloudTechnologyMinorLab1.ViewModels;
 using Google.Cloud.Firestore;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,16 +20,16 @@ namespace CloudTechnologyMinorLab1.Controllers
             CollectionReference coll = db.Collection("Klanten");
 
             // Maak een collection genaamd DanielP add Klant in het document
-            await coll.Document("DanielP").CreateAsync(new Klant { Naam = "Daniel", Achternaam = "Peterson", Leeftijd = 22 });
-            await coll.Document("MoemenB").CreateAsync(new Klant { Naam = "Moemen", Achternaam = "Badawi", Leeftijd = 23 });
-            await coll.Document("AlperS").CreateAsync(new Klant { Naam = "Alper", Achternaam = "Sahin", Leeftijd = 22 });
-            await coll.Document("WaylH").CreateAsync(new Klant { Naam = "Wayl", Achternaam = "Hamham", Leeftijd = 24 });
-            await coll.Document("TimothyB").CreateAsync(new Klant { Naam = "Timothy", Achternaam = "Benschop", Leeftijd = 23 });
+            await coll.Document("DanielP").CreateAsync(new Klant { Naam = "Daniel", Achternaam = "Peterson", Geslacht= "M", Leeftijd = 22, Bedrijf = "Albert Heijn", Postcode = "2432 DE" });
+            await coll.Document("MoemenB").CreateAsync(new Klant { Naam = "Moemen", Achternaam = "Badawi", Geslacht = "M", Leeftijd = 23, Bedrijf = "Coolblue", Postcode = "1519 AZ" });
+            await coll.Document("AlperS").CreateAsync(new Klant { Naam = "Alper", Achternaam = "Sahin", Geslacht = "M", Leeftijd = 28, Bedrijf = "Praxis", Postcode = "2015 TE" });
+            await coll.Document("WaylH").CreateAsync(new Klant { Naam = "Wayl", Achternaam = "Hamham", Geslacht = "M", Leeftijd = 29, Bedrijf = "Lidl", Postcode = "2432 DE" });
+            await coll.Document("TimothyB").CreateAsync(new Klant { Naam = "Timothy", Achternaam = "Benschop", Geslacht = "M", Leeftijd = 42, Bedrijf = "Sligro", Postcode = "2432 DE" });
 
             var products = new Product[]
            {
-                new Product{Naam = "MySQL", Storage = 4},
-                new Product{Naam = "SQL Server", Storage = 1}
+                new Product{ProductId = "MySQL", MemoryGB = 4},
+                new Product{ProductId = "SQL Server", MemoryGB = 1}
            };
 
             var productList = new List<Product>();
@@ -38,96 +39,136 @@ namespace CloudTechnologyMinorLab1.Controllers
                 productList.Add(product);
             }
 
-            await coll.Document("AlanS").CreateAsync(new Klant { Naam = "Alan", Achternaam = "Smith", Leeftijd = 27, products = productList });
+            await coll.Document("AlanS").CreateAsync(new Klant { Naam = "Alan", Achternaam = "Smith", Geslacht = "M", Leeftijd = 18, Bedrijf = "Amazon", Postcode = "2325 UA", products = productList });
         }
 
         // Opdracht a: Maak een webpagina met een overzicht van alle klanten        
         public async Task<IActionResult> Index()
         {
             db = FirestoreDatabase.LoadDatabase();
-
+            
             // Fetch collection genaamd klanten
-            CollectionReference coll = db.Collection("Klanten");
-      
-            List<Klant> klantenLijst = new List<Klant>();
+            CollectionReference coll = db.Collection("Klanten");        
+            List<DocumentKlant> documentKlantLijst = new List<DocumentKlant>();
 
             // Maak snapshot van hele klanten collection
             QuerySnapshot alleKlanten = await coll.GetSnapshotAsync();
 
             foreach(DocumentSnapshot document in alleKlanten.Documents)
-            {
-                Klant klant = document.ConvertTo<Klant>();
+            {        
+                DocumentKlant documentKlant = new DocumentKlant
+                {
+                    DocumentId = document.Id,
+                    Klant = document.ConvertTo<Klant>()
+                };
 
-                klantenLijst.Add(klant);
+                documentKlantLijst.Add(documentKlant);                
             }
          
-            return View(klantenLijst);
+            return View(documentKlantLijst);
         }
 
         // Opdracht b: Maak een webpagina met alle producten die 1 specifieke klant afneemt
-        [Route("Klant/Producten/{naam}")]
-        public async Task<IActionResult> Producten(string naam)
+        [Route("Klant/Producten/{documentId}")]
+        public async Task<IActionResult> Producten(string documentId)
         {
             db = FirestoreDatabase.LoadDatabase();
-
-            CollectionReference coll = db.Collection("Klanten");
-            Query klantQuery = coll.WhereEqualTo("Naam", naam);
-            QuerySnapshot klantMetNaam = await klantQuery.GetSnapshotAsync();
-
-            Klant klant;
-
-            if (klantMetNaam.Documents.Count > 0)
-            {
-                klant = klantMetNaam.Documents[0].ConvertTo<Klant>();
-            }
-            else
-            {
-                klant = null;
-            }            
             
-            return View(klant);
+            CollectionReference klantenColl = db.Collection("Klanten");
+            DocumentReference document = klantenColl.Document(documentId);
+            DocumentSnapshot klantMetNaam = await document.GetSnapshotAsync();
+            
+            DocumentKlant documentKlant = new DocumentKlant
+            {
+                DocumentId = document.Id,
+                Klant = klantMetNaam.ConvertTo<Klant>()
+            };
+
+            Query query = klantenColl.WhereEqualTo("Naam", documentKlant.Klant.Naam);
+
+            FirestoreChangeListener listener = query.Listen(snapshot =>
+            {                
+                foreach(DocumentChange change in snapshot.Changes)
+                {
+                    DocumentSnapshot documentSnapshot = change.Document;
+
+                    if (documentSnapshot.Exists)
+                    {
+                        documentKlant.DocumentId = document.Id;
+                        documentKlant.Klant = documentSnapshot.ConvertTo<Klant>();                        
+                    }
+                }                                   
+            });
+
+            await listener.StopAsync();
+
+            return View(documentKlant);
         }
 
-        [Route("Klant/Create/{naam}")]
+        [Route("Klant/Create/{documentId}")]
         // GET: Klant/Create
-        public async Task<IActionResult> Create(string naam, Product product)
+        public async Task<IActionResult> Create(string documentId, Product product)
         {
             db = FirestoreDatabase.LoadDatabase();
 
             // Fetch 'Klanten' collection
-            CollectionReference coll = db.Collection("Klanten");           
-            // Query to fetch 'Klant' with parameter name
-            Query klantQuery = coll.WhereEqualTo("Naam", naam);         
-            QuerySnapshot klantMetNaam = await klantQuery.GetSnapshotAsync();
-            DocumentReference document = coll.Document(klantMetNaam.Documents[0].Id);
-
+            CollectionReference klantenColl = db.Collection("Klanten");         
+            DocumentReference document = klantenColl.Document(documentId);
+            DocumentSnapshot klantMetNaam = await document.GetSnapshotAsync();          
             
-            await document.UpdateAsync("products", FieldValue.ArrayUnion(product));
-           
+            if(product.ProductId != null)
+            {
+                await document.UpdateAsync("products", FieldValue.ArrayUnion(product));
 
-            //if (ModelState.IsValid)
-            //{
-
-            //    return RedirectToAction("Index");
-            //}          
+                return RedirectToAction(documentId, "Klant/Producten");
+            }                    
 
             return View(product);
         }
 
-        [Route("Klant/Delete/{naam}")]
-        public async Task<IActionResult> Delete(string naam, Product product)
+        // d)	Maak een webpagina waarin je een veld van een klant kan editen
+        [Route("Klant/Edit/{documentId}")]
+        public async Task<IActionResult> Edit(string documentId, Klant updatedKlant)
         {
             db = FirestoreDatabase.LoadDatabase();
 
-            CollectionReference klantenRef = db.Collection("Klanten");
-            Query query = klantenRef.WhereEqualTo("Naam", naam);
-            QuerySnapshot querySnapshot = await query.GetSnapshotAsync();
+            CollectionReference klantenColl = db.Collection("Klanten");
+            DocumentReference document = klantenColl.Document(documentId);
+            DocumentSnapshot klantMetNaam = await document.GetSnapshotAsync();
+                 
+            Klant klant = klantMetNaam.ConvertTo<Klant>();
 
-            DocumentReference document = klantenRef.Document(querySnapshot.Documents[0].Id);
+            if (updatedKlant.Naam != null && updatedKlant != klant)
+            {
+                updatedKlant.products = klant.products;
+                await document.SetAsync(updatedKlant);
+                              
+                return RedirectToAction("Index");
+            }
 
-            await document.UpdateAsync("products", FieldValue.ArrayRemove(product));
-
-            return RedirectToAction("Index");
+            return View(klant);
         }
+
+        // c)	Maak een webpagina waarin je per klant een product kan toevoegen en verwijderen
+        [Route("Klant/Create{documentId}&{productId}")]
+        public async Task<IActionResult> Delete(string documentId, string productId)
+        {
+            db = FirestoreDatabase.LoadDatabase();
+
+            CollectionReference klantenColl = db.Collection("Klanten");
+            DocumentReference document = klantenColl.Document(documentId);
+            DocumentSnapshot klantMetNaam = await document.GetSnapshotAsync();
+
+            Klant klant = klantMetNaam.ConvertTo<Klant>();
+
+            Product product = klant.products.FirstOrDefault(p => p.ProductId == productId);
+
+            if(product != null)
+            {
+                await document.UpdateAsync("products", FieldValue.ArrayRemove(product));
+            }
+
+            return RedirectToAction(documentId, "Klant/Producten");
+        }      
     }
 }

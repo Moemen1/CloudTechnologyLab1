@@ -1,9 +1,9 @@
-﻿@model Klant
+﻿@model CloudTechnologyMinorLab1.ViewModels.DocumentKlant
 @{
     ViewData["Title"] = "Producten";
 }
 
-<h2>Klant: @Model.Naam @Model.Achternaam</h2>
+<h2>Klant: @Model.Klant.Naam @Model.Klant.Achternaam</h2>
 
 <div class=" container">
     <div class="row">
@@ -14,22 +14,23 @@
             <thead>
                 <tr>
                     <th>Product naam</th>
-                    <th>Storage(TB)</th>
-                    <th>Kosten(euro)</th>
-                    <th>CPU</th>
+                    <th>Storage(GB)</th>
+                    <th>Kosten(euro/maand)</th>
+                    <th>CPU Cores</th>
+                    <th>Disk type</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (Product product in Model.products)
+                @foreach (Product product in Model.Klant.products)
                 {
                 <tr>
-                    <td>@product.Naam</td>
-                    <td>@product.Storage</td>
-                    <td>@product.Kosten</td>
+                    <td>@product.ProductId</td>
+                    <td>@product.MemoryGB</td>
+                    <td>@product.KostenPerMaand</td>
                     <td>@product.CPU</td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@Model.Naam">Edit</a> |
-                        <a asp-action="Delete" asp-route-id="@Model.Naam">Delete</a>
+                    <td>@product.DiskType</td>
+                    <td>                    
+                        <a asp-action="Delete" asp-route-id="@Model.DocumentId" asp-route-productId="@product.ProductId">Delete</a>
                     </td>
                 </tr>
                 }

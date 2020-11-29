@@ -1,4 +1,4 @@
-﻿@model List<Klant>
+﻿@model List<CloudTechnologyMinorLab1.ViewModels.DocumentKlant>
 @{
     ViewData["Title"] = "Overzicht";
 }
@@ -11,21 +11,30 @@
         <table class="table">
             <thead>
                 <tr>
+                    <th>DocumentId</th>
                     <th>Naam</th>
                     <th>Achternaam</th>
+                    <th>Geslacht</th>
                     <th>Leeftijd</th>
+                    <th>Postcode</th>
+                    <th>Bedrijf</th>                    
                 </tr>
             </thead>
 
-            @foreach (Klant item in Model)
+            @foreach (CloudTechnologyMinorLab1.ViewModels.DocumentKlant item in Model)
             {
                 <tbody>
 
                     <tr>
-                        <td> <a asp-action="Producten" asp-route-id="@item.Naam">@item.Naam</a></td>
-                        <td>@item.Achternaam</td>
-                        <td>@item.Leeftijd</td>
-
+                        <td><a asp-action="Producten" asp-route-id="@item.DocumentId">@item.DocumentId</a></td>
+                        <td>@item.Klant.Naam</td>
+                        <td>@item.Klant.Achternaam</td>
+                        <td>@item.Klant.Geslacht</td>
+                        <td>@item.Klant.Leeftijd</td>
+                        <td>@item.Klant.Postcode</td>
+                        <td>@item.Klant.Bedrijf</td>
+                        <td><a asp-action="Edit" asp-route-id="@item.DocumentId">Edit</a></td>
+                        
                         @*@foreach (Product product in item.products)
                     {
                         <td>@product.Naam</td>
