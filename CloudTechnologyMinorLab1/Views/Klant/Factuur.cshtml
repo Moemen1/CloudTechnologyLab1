@@ -1,0 +1,38 @@
+﻿@section Styles{ 
+    <link rel="stylesheet" href="~/css/Factuur.css" />
+}
+
+@{
+    ViewData["Title"] = "Factuur";
+}
+
+<div class="container-fluid" style="border:1px solid #000000">
+    <div class="row">
+        <h2><strong>Factuur</strong></h2>
+        <div class="row">
+            <div class="col-sm-4">
+                <table class="table borderless">
+                    <tbody>
+                        <tr>
+                            <th>Factuurnummer:</th>
+                            <td>@DateTime.UtcNow.Year-@DateTime.UtcNow.Year</td>
+                        </tr>
+                        <tr>
+                            <th>Factuurdatum:</th>
+                            <td>@DateTime.UtcNow.Year</td>
+                        </tr>
+                        <tr>
+                            <th>Vervaldatum:</th>
+                            <td>@DateTime.UtcNow.Year</td>
+                        </tr>
+                        <tr>
+                            <th>Referentie:</th>
+                            <td>XXX-123-321</td>
+                        </tr>
+                    </tbody>
+                </table>      
+            </div>
+        </div>
+    </div>
+</div>
+

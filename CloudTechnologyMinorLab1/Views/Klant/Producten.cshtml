@@ -29,8 +29,8 @@
                     <td>@product.KostenPerMaand</td>
                     <td>@product.CPU</td>
                     <td>@product.DiskType</td>
-                    <td>                    
-                        <a asp-action="Delete" asp-route-id="@Model.DocumentId" asp-route-productId="@product.ProductId">Delete</a>
+                    <td>
+                        <a asp-action="Delete" asp-route-id="@Model.DocumentId" asp-route-productId="@product.ProductId">Delete</a>                        
                     </td>
                 </tr>
                 }
@@ -38,6 +38,7 @@
         </table>
     </div>
     <div class="row">
+        <a asp-action="Factuur" asp-route-id="@Model.DocumentId" asp-route-productId=>Genereer Factuur</a> |
         <a asp-action="Index">Terug naar overzicht</a>
     </div>
     

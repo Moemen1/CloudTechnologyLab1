@@ -169,6 +169,18 @@ namespace CloudTechnologyMinorLab1.Controllers
             }
 
             return RedirectToAction(documentId, "Klant/Producten");
-        }      
+        }  
+        
+        [Route("Klant/Factuur{documentId}")]
+        public async Task<IActionResult> Factuur(string documentId)
+        {
+            db = FirestoreDatabase.LoadDatabase();
+
+            CollectionReference klantenColl = db.Collection("Klanten");
+            DocumentReference document = klantenColl.Document(documentId);
+            DocumentSnapshot klantMetNaam = await document.GetSnapshotAsync();
+            
+            return View();
+        }
     }
 }
